@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="avid-jquery-build" default="build" basedir="../">
+    <description>Avid jQuery Build File</description>
+    
+    <dirname property="root.dir" file="${ant.file.avid-jquery-build}/../"/>
+    <property name="build.dir" location="${root.dir}/build/"/>
+    <property name="src.dir" location="${root.dir}/src/"/>
+    <property name="jquery.dir" location="${src.dir}/jquery/"/>
+    <property name="lofty.build.dir" value="${root.dir}/../lofty/build/"/>
+    
+    <property name="gcc.jar" location="${lofty.build.dir}/compiler.jar"/>
+    <property name="cut.file" value="${build.dir}/cut.sh"/>
+    <property name="extern.file" value="${build.dir}/extern.js"/>
+    <property name="charset" value="utf-8"/>
+
+    <property name="jquery.file" value="${jquery.dir}/jquery-1.7.2.min.js"/>
+    <property name="jquery.target.file" value="${jquery.dir}/jquery-1.7.2.js"/>
+
+    <target name="copy">
+        <copy file="${jquery.file}" tofile="${jquery.file}.license" overwrite="true"/>
+        <copy file="${jquery.file}" tofile="${jquery.file}.main" overwrite="true"/>
+    </target>
+    
+    <target name="cut" depends="copy">
+        <exec executable="${cut.file}">
+            <arg value="${jquery.file}.license"/>
+            <arg value="${jquery.file}.main"/>
+        </exec>
+    </target>
+
+    <target name="compress">
+        <apply executable="java" verbose="true" dest="${jquery.dir}" failonerror="true">
+            <fileset dir="${jquery.dir}">
+                <include name="alicn.js"/>
+            </fileset>
+            
+            <arg line="-jar"/>
+            <arg path="${gcc.jar}"/>
+            <arg line="--externs ${extern.file}"/>
+            <arg line="--compilation_level SIMPLE_OPTIMIZATIONS"/>
+
+            <arg line="--warning_level VERBOSE"/>
+            <arg line="--jscomp_off=checkTypes"/>
+            <arg line="--jscomp_error=checkDebuggerStatement"/>
+
+            <arg line="--js"/>
+            <srcfile/>
+            <arg value="--js_output_file"/>
+            <targetfile/>
+            <mapper type="regexp" from="^(.*)\.js$" to="\1.js.tmp"/>
+        </apply>
+    </target>
+
+    <target name="concat" depends="cut,compress">
+        <concat destfile="${jquery.target.file}" encoding="${charset}" outputencoding="${charset}">
+            <path path="${jquery.file}.license"/>
+            <path path="${jquery.dir}/intro.js"/>
+            <path path="${jquery.file}.main"/>
+            <path path="${jquery.dir}/alicn.js.tmp"/>
+        </concat>
+    </target>
+    
+    <target name="clean">
+        <delete file="${jquery.file}.license"/>
+        <delete file="${jquery.file}.main"/>
+        <delete file="${jquery.dir}/alicn.js.tmp"/>
+    </target>
+
+    <target name="avid_jquery" depends="concat,clean"/>
+</project>
