@@ -50,12 +50,18 @@
             <mapper type="regexp" from="^(.*)\.js$" to="\1.js.tmp"/>
         </apply>
     </target>
-
-    <target name="concat" depends="cut,compress">
-        <concat destfile="${jquery.target.file}" encoding="${charset}" outputencoding="${charset}">
-            <path path="${jquery.file}.license"/>
-            <path path="${jquery.dir}/intro.js"/>
+    
+    <target name="concat_main" depends="cut">
+        <concat destfile="${jquery.file}.tmp" encoding="${charset}" outputencoding="${charset}">
+            <header>;window.jQuery||</header>
             <path path="${jquery.file}.main"/>
+        </concat>
+    </target>
+    
+    <target name="concat" depends="concat_main,compress">
+        <concat destfile="${jquery.target.file}" encoding="${charset}" outputencoding="${charset}" fixlastline="yes">
+            <path path="${jquery.file}.license"/>
+            <path path="${jquery.file}.tmp"/>
             <path path="${jquery.dir}/alicn.js.tmp"/>
         </concat>
     </target>
@@ -63,6 +69,7 @@
     <target name="clean">
         <delete file="${jquery.file}.license"/>
         <delete file="${jquery.file}.main"/>
+        <delete file="${jquery.file}.tmp"/>
         <delete file="${jquery.dir}/alicn.js.tmp"/>
     </target>
 
