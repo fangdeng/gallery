@@ -5,12 +5,12 @@
  * */
 
 window.lofty && (
-    define( 'avid/jquery/jquery-1.7.2', function(){
+    define( 'avid/jquery/jquery@VERSION', function(){
         return jQuery;
     } ),
     lofty.config({
         alias: {
-            jquery: 'avid/jquery/jquery-1.7.2'
+            jquery: 'avid/jquery/jquery@VERSION'
         }
     })
 );

@@ -12,26 +12,26 @@
     <property name="cut.file" value="${build.dir}/cut.sh"/>
     <property name="extern.file" value="${build.dir}/extern.js"/>
     <property name="charset" value="utf-8"/>
+    <property name="jquery.version" value="1.8.3"/>
 
-    <property name="jquery.file" value="${jquery.dir}/jquery-1.7.2.min.js"/>
-    <property name="jquery.target.file" value="${jquery.dir}/jquery-1.7.2.js"/>
-
-    <target name="copy">
-        <copy file="${jquery.file}" tofile="${jquery.file}.license" overwrite="true"/>
-        <copy file="${jquery.file}" tofile="${jquery.file}.main" overwrite="true"/>
-    </target>
+    <property name="wrap.file" value="${jquery.dir}/alicn.js"/>
+    <property name="wrap.copy.file" value="${jquery.dir}/alicn.copy.js"/>
+    <property name="jquery.file" value="${jquery.dir}/jquery-${jquery.version}.min.js"/>
+    <property name="jquery.source.file" value="${jquery.dir}/jquery-${jquery.version}.source.js"/>
+    <property name="jquery.latest.file" value="${jquery.dir}/jquery-latest.js"/>
+    <property name="jquery.debug.file" value="${jquery.dir}/jquery-latest-debug.js"/>
     
-    <target name="cut" depends="copy">
-        <exec executable="${cut.file}">
-            <arg value="${jquery.file}.license"/>
-            <arg value="${jquery.file}.main"/>
-        </exec>
+    <property name="prevent.string" value=";window.jQuery||"/>
+    
+    <target name="prepare">
+        <copy file="${wrap.file}" tofile="${wrap.copy.file}" overwrite="true"/>
+        <replaceregexp file="${wrap.copy.file}" match="@VERSION" replace="Latest" flags="g" encoding="${charset}"/>
     </target>
 
-    <target name="compress">
+    <target name="compress" depends="prepare">
         <apply executable="java" verbose="true" dest="${jquery.dir}" failonerror="true">
             <fileset dir="${jquery.dir}">
-                <include name="alicn.js"/>
+                <include name="alicn.copy.js"/>
             </fileset>
             
             <arg line="-jar"/>
@@ -51,18 +51,38 @@
         </apply>
     </target>
     
+    <target name="copy">
+        <copy file="${jquery.file}" tofile="${jquery.file}.license" overwrite="true"/>
+        <copy file="${jquery.file}" tofile="${jquery.file}.main" overwrite="true"/>
+    </target>
+    
+    <target name="cut" depends="copy">
+        <exec executable="${cut.file}">
+            <arg value="${jquery.file}.license"/>
+            <arg value="${jquery.file}.main"/>
+        </exec>
+    </target>
+    
     <target name="concat_main" depends="cut">
         <concat destfile="${jquery.file}.tmp" encoding="${charset}" outputencoding="${charset}">
-            <header>;window.jQuery||</header>
+            <header>${prevent.string}</header>
             <path path="${jquery.file}.main"/>
         </concat>
     </target>
     
     <target name="concat" depends="concat_main,compress">
-        <concat destfile="${jquery.target.file}" encoding="${charset}" outputencoding="${charset}" fixlastline="yes">
+        <concat destfile="${jquery.latest.file}" encoding="${charset}" outputencoding="${charset}" fixlastline="yes">
             <path path="${jquery.file}.license"/>
             <path path="${jquery.file}.tmp"/>
-            <path path="${jquery.dir}/alicn.js.tmp"/>
+            <path path="${wrap.copy.file}.tmp"/>
+        </concat>
+    </target>
+    
+    <target name="concat_debug" depends="prepare">
+        <concat destfile="${jquery.debug.file}" encoding="${charset}" outputencoding="${charset}" fixlastline="yes">
+            <header>${prevent.string}</header>
+            <path path="${jquery.source.file}"/>
+            <path path="${wrap.copy.file}"/>
         </concat>
     </target>
     
@@ -70,8 +90,9 @@
         <delete file="${jquery.file}.license"/>
         <delete file="${jquery.file}.main"/>
         <delete file="${jquery.file}.tmp"/>
-        <delete file="${jquery.dir}/alicn.js.tmp"/>
+        <delete file="${wrap.copy.file}"/>
+        <delete file="${wrap.copy.file}.tmp"/>
     </target>
 
-    <target name="avid_jquery" depends="concat,clean"/>
+    <target name="avid_jquery" depends="concat,concat_debug,clean"/>
 </project>
