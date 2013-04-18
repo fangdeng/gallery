@@ -1,1 +1,1 @@
-Avid, vendor for Fangdeng Team, http://avid.fangdeng.org/
+Gallery, vendor for Fangdeng Team, http://gallery.fangdeng.org/

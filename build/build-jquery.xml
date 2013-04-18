@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<project name="avid-jquery-build" default="build" basedir="../">
-    <description>Avid jQuery Build File</description>
+<project name="gallery-jquery-build" default="build" basedir="../">
+    <description>Gallery jQuery Build File</description>
     
-    <dirname property="root.dir" file="${ant.file.avid-jquery-build}/../"/>
+    <dirname property="root.dir" file="${ant.file.gallery-jquery-build}/../"/>
     <property name="build.dir" location="${root.dir}/build/"/>
     <property name="src.dir" location="${root.dir}/src/"/>
     <property name="jquery.dir" location="${src.dir}/jquery/"/>
@@ -94,5 +94,5 @@
         <delete file="${wrap.copy.file}.tmp"/>
     </target>
 
-    <target name="avid_jquery" depends="concat,concat_debug,clean"/>
+    <target name="gallery_jquery" depends="concat,concat_debug,clean"/>
 </project>

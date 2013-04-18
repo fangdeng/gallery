@@ -9478,12 +9478,12 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
  * */
 
 window.lofty && (
-    define( 'avid/jquery/jqueryLatest', function(){
+    define( 'gallery/jquery/jqueryLatest', function(){
         return jQuery;
     } ),
     lofty.config({
         alias: {
-            jquery: 'avid/jquery/jqueryLatest'
+            jquery: 'gallery/jquery/jqueryLatest'
         }
     })
 );
