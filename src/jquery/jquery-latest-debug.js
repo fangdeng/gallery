@@ -9477,13 +9477,9 @@ if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
  * @date 130327
  * */
 
-window.lofty && (
+if ( window.lofty ){
+    jQuery.noConflict();
     define( 'gallery/jquery/jqueryLatest', function(){
         return jQuery;
-    } ),
-    lofty.config({
-        alias: {
-            jquery: 'gallery/jquery/jqueryLatest'
-        }
-    })
-);
+    } );
+}

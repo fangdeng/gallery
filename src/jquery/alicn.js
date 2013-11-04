@@ -4,13 +4,9 @@
  * @date 130327
  * */
 
-window.lofty && (
+if ( window.lofty ){
+    jQuery.noConflict();
     define( 'gallery/jquery/jquery@VERSION', function(){
         return jQuery;
-    } ),
-    lofty.config({
-        alias: {
-            jquery: 'gallery/jquery/jquery@VERSION'
-        }
-    })
-);
+    } );
+}
