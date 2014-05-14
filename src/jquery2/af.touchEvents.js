@@ -14,8 +14,8 @@
  */
 /* global af*/
 (function($) {
-    "use strict";
-    var touch = {},
+  "use strict";
+  var touch = {},
     touchTimeout, tapTimeout, swipeTimeout, longTapTimeout,
     longTapDelay = 750,
     gesture
@@ -48,12 +48,18 @@
   }
 
   function isPrimaryTouch(event){
+    // modified by yuanlihao  2014/5/14
+        // the original event object is expected, but jquery returns the wrapped jQuery.Event object instead
+        event = event.originalEvent || event;
     return (event.pointerType == 'touch' ||
       event.pointerType == event.MSPOINTER_TYPE_TOUCH)
       && event.isPrimary
   }
 
   function isPointerEventType(e, type){
+    // modified by yuanlihao  2014/5/14
+    // the original event object is expected, but jquery returns the wrapped jQuery.Event object instead
+    e = e.originalEvent || e;
     return (e.type == 'pointer'+type ||
       e.type.toLowerCase() == 'mspointer'+type)
   }
@@ -68,7 +74,9 @@
 
     $(document)
       .bind('MSGestureEnd', function(e){
-        var swipeDirectionFromVelocity =
+        // modified by yuanlihao  2014/5/14
+        // the original event object is expected, but jquery returns the wrapped jQuery.Event object instead
+        var e = e.originalEvent || e, swipeDirectionFromVelocity =
           e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
         if (swipeDirectionFromVelocity) {
           touch.el.trigger('swipe')
@@ -76,6 +84,9 @@
         }
       })
       .on('touchstart MSPointerDown pointerdown', function(e){
+        // modified by yuanlihao  2014/5/14
+        // the original event object is expected, but jquery returns the wrapped jQuery.Event object instead
+        e = e.originalEvent || e;
         if((_isPointerType = isPointerEventType(e, 'down')) &&
           !isPrimaryTouch(e)) return
         firstTouch = _isPointerType ? e : e.touches[0]
@@ -99,6 +110,9 @@
         if (gesture && _isPointerType) gesture.addPointer(e.pointerId);
       })
       .on('touchmove MSPointerMove pointermove', function(e){
+        // modified by yuanlihao  2014/5/14
+        // the original event object is expected, but jquery returns the wrapped jQuery.Event object instead
+        e = e.originalEvent || e;
         if((_isPointerType = isPointerEventType(e, 'move')) &&
           !isPrimaryTouch(e)) return
         firstTouch = _isPointerType ? e : e.touches[0]
@@ -110,6 +124,9 @@
         deltaY += Math.abs(touch.y1 - touch.y2)
       })
       .on('touchend MSPointerUp pointerup', function(e){
+        // modified by yuanlihao  2014/5/14
+        // the original event object is expected, but jquery returns the wrapped jQuery.Event object instead
+        e = e.originalEvent || e;
         if((_isPointerType = isPointerEventType(e, 'up')) &&
           !isPrimaryTouch(e)) return
         cancelLongTap()
