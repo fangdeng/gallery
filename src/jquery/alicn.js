@@ -9,4 +9,10 @@ if ( window.lofty ){
     define( 'gallery/jquery/jquery@VERSION', function(){
         return jQuery;
     } );
+    
+    lofty.config({
+        alias: {
+            'jquery': 'gallery/jquery/jquery@VERSION'
+        }
+    });
 }
