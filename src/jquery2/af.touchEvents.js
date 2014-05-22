@@ -12,7 +12,6 @@
  * swipeUp
  * swipeDown
  */
-/* global af*/
 (function($) {
   "use strict";
   var touch = {},
